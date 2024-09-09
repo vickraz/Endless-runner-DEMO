@@ -104,4 +104,18 @@ anims/Run = SubResource( 2 )
 wait_time = 0.1
 one_shot = true
 
+[node name="JumpBuffer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.35
+one_shot = true
+
+[node name="DashReloadTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_CoyoteTimer_timeout"]
+[connection signal="timeout" from="JumpBuffer" to="." method="_on_JumpBuffer_timeout"]
+[connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]
+[connection signal="timeout" from="DashReloadTimer" to="." method="_on_DashReloadTimer_timeout"]
