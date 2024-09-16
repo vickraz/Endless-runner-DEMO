@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scenes/MountainBG.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Assets/Tilesets/Terrain Tileset.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/BlueGem.tscn" type="PackedScene" id=4]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -67,3 +68,6 @@ tile_data = PoolIntArray( 524330, 0, 0, 524331, 0, 0, 524332, 0, 0, 524333, 0, 0
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
 position = Vector2( 45, 466 )
+
+[node name="BlueGem" parent="." instance=ExtResource( 4 )]
+position = Vector2( 178, 484 )

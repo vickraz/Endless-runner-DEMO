@@ -1,5 +1,7 @@
 extends KinematicBody2D
+class_name Player
 
+const DASH_GHOST_SCENE = preload("res://Scenes/DashGhost.tscn")
 
 const MIN_GRAVITY = 1000
 const NORM_GRAVITY = 2000
@@ -10,6 +12,7 @@ const MAX_ACC = 400
 const MAX_Y_VEL = 1000
 const DASH_SPEED = 900
 const DASH_ACC = 4000
+const GHOST_WAIT_TIME = 0.05
 
 enum {RUN, AIR, DASH, DEAD}
 
@@ -21,12 +24,14 @@ var state: int = RUN
 var can_jump: bool = true
 var want_to_jump: bool = false
 var can_dash: bool = true
+var ghost_timer: float = 0.0
 
 onready var coyote_timer: Timer = $CoyoteTimer
 onready var dash_timer: Timer = $DashTimer
 onready var dash_reload_timer: Timer = $DashReloadTimer
 onready var jump_buffer: Timer = $JumpBuffer
 onready var anim: AnimationPlayer = $AnimationPlayer
+
 
 
 func _physics_process(delta: float) -> void:
@@ -50,6 +55,9 @@ func _move_player(delta: float) -> void:
 func _dash_movement(delta: float) -> void:
 	velocity = velocity.move_toward(dash_direction * DASH_SPEED, DASH_ACC * delta)
 	velocity = move_and_slide(velocity, Vector2.UP)
+
+func pickup(type: String) -> void:
+	print(type)
 
 ################## STATE FUNCTIONS ####################################
 
@@ -105,6 +113,14 @@ func _dash_state(delta: float) -> void:
 	dash_direction.y = Input.get_axis("Jump", "Down")
 	dash_direction = dash_direction.normalized()
 	_dash_movement(delta)
+	
+	ghost_timer += delta
+	if ghost_timer > GHOST_WAIT_TIME:
+		ghost_timer = 0.0
+		var ghost = DASH_GHOST_SCENE.instance()
+		ghost.global_position = global_position
+		ghost.frame = $Sprite.frame
+		get_parent().add_child(ghost)
 
 ################## ENTER STATE FUNCTIONS ##############################
 func _enter_run_state() -> void:
@@ -129,6 +145,8 @@ func enter_dead_state() -> void:
 	state = DEAD
 
 func _enter_dash_state() -> void:
+	if velocity.y > 0:
+		velocity.y = 0
 	state = DASH
 	can_dash = false
 	dash_timer.start()
