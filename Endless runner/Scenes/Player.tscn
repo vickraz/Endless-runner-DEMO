@@ -74,6 +74,7 @@ tracks/0/keys = {
 
 [node name="Player" type="KinematicBody2D"]
 z_index = 1
+collision_mask = 14
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -113,10 +114,6 @@ one_shot = true
 wait_time = 0.35
 one_shot = true
 
-[node name="DashReloadTimer" type="Timer" parent="."]
-one_shot = true
-
 [connection signal="timeout" from="CoyoteTimer" to="." method="_on_CoyoteTimer_timeout"]
 [connection signal="timeout" from="JumpBuffer" to="." method="_on_JumpBuffer_timeout"]
 [connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]
-[connection signal="timeout" from="DashReloadTimer" to="." method="_on_DashReloadTimer_timeout"]

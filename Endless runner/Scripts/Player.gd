@@ -23,12 +23,11 @@ var distance: float = 0.0
 var state: int = RUN
 var can_jump: bool = true
 var want_to_jump: bool = false
-var can_dash: bool = true
+var can_dash: bool = false
 var ghost_timer: float = 0.0
 
 onready var coyote_timer: Timer = $CoyoteTimer
 onready var dash_timer: Timer = $DashTimer
-onready var dash_reload_timer: Timer = $DashReloadTimer
 onready var jump_buffer: Timer = $JumpBuffer
 onready var anim: AnimationPlayer = $AnimationPlayer
 
@@ -44,6 +43,9 @@ func _physics_process(delta: float) -> void:
 			_dash_state(delta)
 		DEAD: 
 			_dead_state()
+	
+	if global_position.y > 620:
+		get_tree().reload_current_scene()
 
 ################# GENERAL HELP FUNCTIONS ############################
 func _move_player(delta: float) -> void:
@@ -57,7 +59,8 @@ func _dash_movement(delta: float) -> void:
 	velocity = move_and_slide(velocity, Vector2.UP)
 
 func pickup(type: String) -> void:
-	print(type)
+	if type == "BlueGem":
+		can_dash = true
 
 ################## STATE FUNCTIONS ####################################
 
@@ -162,12 +165,8 @@ func _on_JumpBuffer_timeout() -> void:
 
 
 func _on_DashTimer_timeout() -> void:
-	dash_reload_timer.start()
 	if is_on_floor():
 		_enter_run_state()
 	else:
 		_enter_air_state(false)
 
-
-func _on_DashReloadTimer_timeout() -> void:
-	can_dash = true

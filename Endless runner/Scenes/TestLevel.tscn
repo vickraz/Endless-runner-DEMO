@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/MountainBG.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Assets/Tilesets/Terrain Tileset.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/BlueGem.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/ExplosiveBarrel.tscn" type="PackedScene" id=5]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -63,6 +64,7 @@ points = PoolVector2Array( 0, 0, 16, 16, 0, 16 )
 scale = Vector2( 2, 2 )
 tile_set = SubResource( 2 )
 cell_size = Vector2( 16, 16 )
+collision_layer = 2
 format = 1
 tile_data = PoolIntArray( 524330, 0, 0, 524331, 0, 0, 524332, 0, 0, 524333, 0, 0, 524334, 0, 0, 524335, 0, 0, 524336, 0, 0, 524337, 0, 0, 524338, 0, 0, 524339, 1, 0, 589876, 1, 0, 655413, 1, 0, 720925, 0, 0, 720926, 0, 0, 720927, 0, 0, 720928, 0, 0, 720929, 0, 0, 720930, 0, 0, 720950, 1, 0, 917518, 0, 0, 917519, 0, 0, 917520, 0, 0, 917521, 0, 0, 917522, 0, 0, 917523, 0, 0, 917524, 0, 0, 917525, 0, 0, 917564, 0, 0, 917565, 0, 0, 917566, 0, 0, 917567, 0, 0, 917568, 0, 0, 917569, 0, 0, 917570, 0, 0, 1048576, 0, 0, 1048577, 0, 0, 1048578, 0, 0, 1048579, 0, 0, 1048580, 0, 0, 1048581, 0, 0, 1048582, 0, 0, 1048583, 0, 0, 1048584, 0, 0, 1048585, 0, 0, 1114187, 0, 0, 1114188, 0, 0, 1114189, 0, 0, 1114190, 0, 0, 1114191, 0, 0, 1114192, 0, 0 )
 
@@ -71,3 +73,6 @@ position = Vector2( 45, 466 )
 
 [node name="BlueGem" parent="." instance=ExtResource( 4 )]
 position = Vector2( 178, 484 )
+
+[node name="ExplosiveBarrel" parent="." instance=ExtResource( 5 )]
+position = Vector2( 496, 433 )
