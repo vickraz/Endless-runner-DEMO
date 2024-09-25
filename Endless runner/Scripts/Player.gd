@@ -30,6 +30,7 @@ onready var coyote_timer: Timer = $CoyoteTimer
 onready var dash_timer: Timer = $DashTimer
 onready var jump_buffer: Timer = $JumpBuffer
 onready var anim: AnimationPlayer = $AnimationPlayer
+onready var downSlopeRay: RayCast2D = $DownSlopeRay
 
 
 
@@ -49,14 +50,28 @@ func _physics_process(delta: float) -> void:
 
 ################# GENERAL HELP FUNCTIONS ############################
 func _move_player(delta: float) -> void:
-	velocity.x = move_toward(velocity.x, MAX_SPEED, MAX_ACC * delta)
-	velocity = move_and_slide(velocity, Vector2.UP)
-	velocity.y += gravity * delta
-	velocity.y = min(velocity.y, MAX_Y_VEL)
+	if _on_down_slope():
+		velocity = velocity.move_toward(Vector2.RIGHT.rotated(PI / 4) * MAX_SPEED * 2.5, 
+										NORM_GRAVITY * delta)
+	else:
+		velocity.x = move_toward(velocity.x, MAX_SPEED, MAX_ACC * delta)
+		velocity.y += gravity * delta
+		velocity.y = min(velocity.y, MAX_Y_VEL)
+		
+	velocity = move_and_slide_with_snap(velocity, Vector2.DOWN * 10, Vector2.UP, true, 4, deg2rad(45), true)
+	
 	
 func _dash_movement(delta: float) -> void:
 	velocity = velocity.move_toward(dash_direction * DASH_SPEED, DASH_ACC * delta)
 	velocity = move_and_slide(velocity, Vector2.UP)
+
+func _on_down_slope() -> bool:
+	downSlopeRay.force_raycast_update()
+	if downSlopeRay.is_colliding():
+		var norm: Vector2 = downSlopeRay.get_collision_normal()
+		if is_equal_approx(norm.angle(), - PI / 4):
+			return true
+	return false
 
 func pickup(type: String) -> void:
 	if type == "BlueGem":
@@ -146,6 +161,8 @@ func _enter_air_state(jumping: bool) -> void:
 
 func enter_dead_state() -> void:
 	state = DEAD
+	$Sprite.hide()
+	$BloodParticles.emitting = true
 
 func _enter_dash_state() -> void:
 	if velocity.y > 0:
