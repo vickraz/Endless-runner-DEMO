@@ -81,7 +81,7 @@ func pickup(type: String) -> void:
 
 func _run_state(delta: float) -> void:
 	if Input.is_action_just_pressed("Jump"):
-		_enter_air_state(true)
+		_enter_air_state(true, RUN)
 		_move_player(delta)
 		return
 	elif Input.is_action_just_pressed("Dash") and can_dash:
@@ -92,11 +92,11 @@ func _run_state(delta: float) -> void:
 	_move_player(delta)
 	
 	if not is_on_floor():
-		_enter_air_state(false)
+		_enter_air_state(false, RUN)
 
 func _air_state(delta: float) -> void:
 	if Input.is_action_just_pressed("Jump") and can_jump:
-		_enter_air_state(true)
+		_enter_air_state(true, AIR)
 	elif Input.is_action_just_pressed("Jump") and not can_jump:
 		jump_buffer.start()
 		want_to_jump = true
@@ -121,7 +121,7 @@ func _air_state(delta: float) -> void:
 		if not want_to_jump:
 			_enter_run_state()
 		else:
-			_enter_air_state(true)
+			_enter_air_state(true, AIR)
 
 func _dead_state() -> void:
 	pass
@@ -146,7 +146,7 @@ func _enter_run_state() -> void:
 	gravity = NORM_GRAVITY
 	anim.play("Run")
 
-func _enter_air_state(jumping: bool) -> void:
+func _enter_air_state(jumping: bool, from_state: int) -> void:
 	state = AIR
 	if jumping:
 		can_jump = false
@@ -155,14 +155,18 @@ func _enter_air_state(jumping: bool) -> void:
 		anim.play("Jump")
 	else:
 		gravity = NORM_GRAVITY
-		can_jump = true
-		coyote_timer.start()
+		if from_state != DASH:
+			can_jump = true
+			coyote_timer.start()
 		anim.play("Fall")
 
 func enter_dead_state() -> void:
 	state = DEAD
 	$Sprite.hide()
 	$BloodParticles.emitting = true
+	if state == DASH:
+		dash_timer.paused = true
+		set_physics_process(false)
 
 func _enter_dash_state() -> void:
 	if velocity.y > 0:
@@ -185,5 +189,5 @@ func _on_DashTimer_timeout() -> void:
 	if is_on_floor():
 		_enter_run_state()
 	else:
-		_enter_air_state(false)
+		_enter_air_state(false, DASH)
 
