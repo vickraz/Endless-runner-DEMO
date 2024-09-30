@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Assets/Tilesets/Decorations1.tres" type="TileSet" id=1]
+[ext_resource path="res://Assets/Tilesets/TileSet1.tres" type="TileSet" id=2]
+[ext_resource path="res://Scripts/GroundPart.gd" type="Script" id=3]
+
+[node name="GroundPart" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Wold" type="TileMap" parent="."]
+scale = Vector2( 2, 2 )
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 2
+format = 1
+
+[node name="Decorations" type="TileMap" parent="."]
+scale = Vector2( 2, 2 )
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 16, 16 )
+collision_layer = 0
+collision_mask = 0
+format = 1
+
+[node name="Edge" type="Position2D" parent="."]
+position = Vector2( 405, 379 )
+
+[node name="BarrelSpawn" type="Position2D" parent="."]
