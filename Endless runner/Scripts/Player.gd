@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Player
 
+signal dead(distance)
+
 const DASH_GHOST_SCENE = preload("res://Scenes/DashGhost.tscn")
 
 const MIN_GRAVITY = 1000
@@ -19,7 +21,7 @@ enum {RUN, AIR, DASH, DEAD}
 var velocity: Vector2 = Vector2.ZERO
 var dash_direction: Vector2 = Vector2.RIGHT
 var gravity: int = NORM_GRAVITY
-var distance: float = 0.0
+var distance: int = 0
 var state: int = RUN
 var can_jump: bool = true
 var want_to_jump: bool = false
@@ -31,8 +33,9 @@ onready var dash_timer: Timer = $DashTimer
 onready var jump_buffer: Timer = $JumpBuffer
 onready var anim: AnimationPlayer = $AnimationPlayer
 onready var downSlopeRay: RayCast2D = $DownSlopeRay
+onready var distance_label: Label = $HUD/DistanceLabel
 
-
+onready var start_x: float = global_position.x
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -45,8 +48,10 @@ func _physics_process(delta: float) -> void:
 		DEAD: 
 			_dead_state()
 	
+	distance = (global_position.x - start_x) / 20
+	distance_label.text = "Distance " + str(distance) + " m"
 	if global_position.y > 620:
-		get_tree().reload_current_scene()
+		enter_dead_state()
 
 ################# GENERAL HELP FUNCTIONS ############################
 func _move_player(delta: float) -> void:
@@ -164,6 +169,7 @@ func enter_dead_state() -> void:
 	state = DEAD
 	$Sprite.hide()
 	$BloodParticles.emitting = true
+	emit_signal("dead", distance)
 	if state == DASH:
 		dash_timer.paused = true
 		set_physics_process(false)
